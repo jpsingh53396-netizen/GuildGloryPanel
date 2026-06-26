@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Guild Glory Dashboard</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0a0a0a;
+color:white;
+overflow-x:hidden;
+}
+
+.watermark{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:90%;
+max-width:700px;
+opacity:0.05;
+z-index:0;
+pointer-events:none;
+}
+
+.main{
+position:relative;
+z-index:1;
+padding-bottom:90px;
+}
+
+.top{
+text-align:center;
+padding:20px 15px;
+border-bottom:2px solid #ff6a00;
+background:rgba(0,0,0,0.7);
+backdrop-filter:blur(10px);
+}
+
+.logo{
+width:90px;
+height:90px;
+object-fit:contain;
+margin-bottom:10px;
+}
+
+.brand{
+font-size:30px;
+font-weight:bold;
+color:#ff6a00;
+text-shadow:
+0 0 10px #ff6a00,
+0 0 20px #ff6a00;
+}
+
+.profile-card{
+margin:15px;
+background:rgba(20,20,20,0.75);
+border:1px solid #ff6a00;
+border-radius:20px;
+padding:20px;
+box-shadow:0 0 15px rgba(255,106,0,0.25);
+
+transition:0.3s;
+backdrop-filter:blur(8px); 
+}
+
+.profile-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+}
+
+.credit-box{
+background:#111;
+padding:10px 15px;
+border-radius:12px;
+border:1px solid #ff6a00;
+}
+
+.logout-btn{
+background:#ff6a00;
+color:white;
+padding:10px 18px;
+border-radius:10px;
+text-decoration:none;
+font-weight:bold;
+}
+
+.card{
+margin:15px;
+padding:18px;
+background:rgba(20,20,20,0.75);
+border:1px solid #ff6a00;
+border-radius:18px;
+box-shadow:0 0 15px rgba(255,106,0,0.15);
+}
+
+.card h3{
+color:#ff6a00;
+margin-bottom:10px;
+}
+
+.hidden{
+display:none;
+}
+
+input,select{
+width:100%;
+padding:12px;
+border:none;
+outline:none;
+border-radius:10px;
+background:#111;
+color:white;
+margin-top:10px;
+border:1px solid #333;
+transition:0.3s;
+}
+
+input:focus,
+select:focus{
+border:1px solid #ff6a00;
+box-shadow:0 0 10px rgba(255,106,0,0.5);
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#ff6a00;
+color:white;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#ff7f24;
+transform:scale(1.03);
+box-shadow:0 0 15px rgba(255,106,0,0.5);
+}
+
+.price{
+padding:15px;
+margin-top:10px;
+border-radius:12px;
+background:#111;
+border:1px solid #ff6a00;
+text-align:center;
+}
+
+.price h2{
+color:#ff6a00;
+}
+
+.qr{
+width:220px;
+display:block;
+margin:auto;
+border-radius:15px;
+border:2px solid #ff6a00;
+}
+
+.support-btn{
+display:block;
+width:100%;
+padding:14px;
+text-align:center;
+background:#25D366;
+color:white;
+text-decoration:none;
+border-radius:12px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.bottom{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+display:flex;
+justify-content:space-around;
+background:#111;
+border-top:2px solid #ff6a00;
+padding:10px 0;
+z-index:999;
+}
+
+.nav{
+text-align:center;
+font-size:11px;
+cursor:pointer;
+color:white;
+transition:0.3s;
+padding:5px;
+}
+
+.nav span{
+display:block;
+font-size:20px;
+}
+
+.active{
+color:#ff6a00;
+}
+
+.nav:hover{
+color:#ff6a00;
+transform:translateY(-3px);
+}
+
+.badge{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+margin-top:5px;
+}
+
+.running{
+background:#ffc107;
+color:#000;
+}
+
+.completed{
+background:#28a745;
+color:white;
+}
+
+.failed{
+background:#dc3545;
+color:white;
+}
+
+.expired{
+background:#6c757d;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<img src="/static/images/logo.png" class="watermark">
+
+<div class="main">
+
+<div class="top">
+
+<img src="/static/images/logo.png" class="logo">
+
+<div class="brand">
+GUILD GLORY
+</div>
+
+</div>
+
+<div class="profile-card">
+
+<h3>👤 Profile</h3>
+
+<div class="profile-row">
+<div>
+Email:<br>
+<b>{{ user.email }}</b>
+</div>
+
+<div class="credit-box">
+🪙 {{ user.credits }} Credits
+</div>
+</div>
+
+<br>
+
+<a href="/logout" class="logout-btn">
+🚪 Logout
+</a>
+
+</div>
+
+<!-- HOME -->
+
+<div id="home">
+
+<div class="card">
+
+<h3>⚡ Launch New Guild</h3>
+
+<form action="/launch-bot" method="POST">
+
+<select name="server">
+<option>🇮🇳India Server</option>
+<option>🇳🇵Nepal Server</option>
+<option>🇧🇩Bangladesh Server</option>
+</select>
+
+<input type="text" name="clan_id" placeholder="Enter Clan ID">
+
+<button type="submit" style="
+background:linear-gradient(90deg,#ff6a00,#ff9500);
+font-size:18px;
+padding:15px;
+font-weight:bold;
+box-shadow:0 0 15px rgba(255,106,0,.5);
+">
+🚀 LAUNCH BOT
+</button>
+
+</form>
+
+<p style="margin-top:10px;">
+Cost: 1 Credit
+</p>
+
+</div>
+<div class="card"><h3>📋 Active Orders</h3><p>
+<div class="card">
+
+    <h3>📜 Running Orders</h3>
+
+    {% if logs and logs|length > 0 %}
+
+        {% for l in logs %}
+            <div style="font-size:15px;line-height:28px;">
+
+🌍 <b>Server:</b> {{ l.server }}<br>
+
+🎯 <b>Clan ID:</b> {{ l.clan_id }}<br>
+
+🕒 <b>Time:</b> {{ l.created_at }}
+
+⏳ <b>Expires In:</b> {{ l.expire_text }}
+
+</div>
+
+{% if l.status == "RUNNING" %}
+<span class="badge running">RUNNING</span>
+
+{% elif l.status == "COMPLETED" %}
+<span class="badge completed">COMPLETED</span>
+
+{% elif l.status == "FAILED" %}
+<span class="badge failed">FAILED</span>
+
+{% elif l.status == "EXPIRED" %}
+<span class="badge expired">EXPIRED</span>
+
+{% endif %}
+            </div>
+        {% endfor %}
+
+    {% else %}
+
+        <p style="color:gray;">No running orders available.</p>
+
+    {% endif %}
+
+</div>
+</p></div><div class="card"><h3>🟢 System Status</h3><p>
+All services are operational.
+</p></div></div><!-- REDEEM --><div id="redeem" class="hidden"><div class="card"><h3>🎁 Redeem Code</h3><form method="POST" action="/redeem"><input
+name="code"
+placeholder="Enter Redeem Code">
+
+<button type="submit">
+REDEEM NOW
+</button></form>{% if message %}
+
+<p style="margin-top:10px;color:#00ff88;">
+{{ message }}
+</p>
+{% endif %}</div><div class="card"><h3>🎫 Redeem History</h3><p>
+No redeemed codes yet.
+</p></div></div><!-- HISTORY --><div id="history" class="hidden"><div class="card">
+
+    <h3>📜 Running Orders</h3>
+
+    {% if logs and logs|length > 0 %}
+
+        {% for l in logs %}
+            <div style="padding:10px; border-bottom:1px solid #333;">
+                🌐 Server: {{ l.server }} <br>
+                🆔 Clan ID: {{ l.clan_id }} <br>
+                📅 Time: {{ l.timestamp }}
+            </div>
+        {% endfor %}
+
+    {% else %}
+
+        <p style="color:gray;">No running orders available.</p>
+
+    {% endif %}
+
+</div>
+</p></div><div class="card"><h3>✅ Completed Orders</h3><p>
+No completed orders.
+</p></div></div><!-- BUY --><div id="buy" class="hidden"><div class="card"><h3>💳 Buy Credits</h3><img src="/static/images/qr.jpg" class="qr"><br><form action="/payment" method="POST" enctype="multipart/form-data"><div style="text-align:center;"><button type="button"
+onclick="minusCredit()"
+style="width:60px;display:inline-block;">
+➖
+</button>
+
+<span id="creditText"
+style="font-size:24px;font-weight:bold;padding:0 20px;">
+1 Credit
+</span>
+
+<button type="button"
+onclick="plusCredit()"
+style="width:60px;display:inline-block;">
+➕
+</button>
+
+</div><input
+type="hidden"
+name="credits"
+id="credits"
+value="1">
+
+<div class="price" id="amountBox">
+<h2>₹299</h2>
+<p>Selected Amount</p>
+</div><input
+type="text"
+name="utr"
+placeholder="Enter UTR Number"
+required>
+
+<input
+type="file"
+name="screenshot">
+
+<button type="submit">
+SUBMIT PAYMENT
+</button></form></div><div class="card"><h3>📋 Payment Instructions</h3><p>
+1️⃣ Scan QR Code<br><br>
+
+2️⃣ Select Credits
+
+<br><br>
+
+3️⃣ Complete Payment
+
+<br><br>
+
+4️⃣ Enter UTR Number
+
+<br><br>
+
+5️⃣ Submit Payment Request
+
+<br><br>
+
+6️⃣ Admin Approves Credits
+
+</p></div></div><!-- SUPPORT --><div id="support" class="hidden"><div class="card"><h3>📞 WhatsApp Support</h3><p>
+Response Time:
+Usually within 5-30 minutes.
+</p><a
+href="https://wa.me/918272853396"
+class="support-btn">
+
+💬 CONTACT SUPPORT
+
+</a></div><div class="card"><h3>❓ FAQ</h3><p><b>How do I get credits?</b><br>
+Buy credits using QR payment.<br><br>
+
+<b>How do I redeem?</b><br>
+Use the Redeem tab and enter your code.<br><br>
+
+<b>Need help?</b><br>
+Contact support through WhatsApp.
+
+</p></div></div><!-- BOTTOM NAVIGATION --></div><div class="bottom"><div class="nav active"
+onclick="showTab('home',this)">
+<span>🏠</span>
+Home
+</div><div class="nav"
+onclick="showTab('redeem',this)">
+<span>🎁</span>
+Redeem
+</div><div class="nav"
+onclick="showTab('history',this)">
+<span>📜</span>
+History
+</div><div class="nav"
+onclick="showTab('buy',this)">
+<span>💳</span>
+Buy
+</div><div class="nav"
+onclick="showTab('support',this)">
+<span>📞</span>
+Support
+</div></div><script>
+
+let credits = 1;
+
+function plusCredit(){
+
+if(credits < 10){
+credits++;
+updateCredits();
+}
+
+}
+
+function minusCredit(){
+
+if(credits > 1){
+credits--;
+updateCredits();
+}
+
+}
+
+function updateCredits(){
+
+document.getElementById("credits").value = credits;
+
+document.getElementById("creditText").innerHTML =
+credits + (credits == 1 ? " Credit" : " Credits");
+
+document.getElementById("amountBox").innerHTML =
+"<h2>₹" + (credits * 299) + "</h2><p>Selected Amount</p>";
+
+}
+
+function showTab(id,el){
+
+document.getElementById("home").classList.add("hidden");
+document.getElementById("redeem").classList.add("hidden");
+document.getElementById("history").classList.add("hidden");
+document.getElementById("buy").classList.add("hidden");
+document.getElementById("support").classList.add("hidden");
+
+document.getElementById(id).classList.remove("hidden");
+
+document.querySelectorAll(".nav").forEach(function(item){
+item.classList.remove("active");
+});
+
+el.classList.add("active");
+
+}
+
+</script></body>
+</html>
