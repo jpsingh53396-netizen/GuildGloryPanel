@@ -230,6 +230,36 @@ ACTIVE
 
 </div>
 
+<div id="botlogs" class="card">
+
+<h3>🚀 Bot Launch History</h3>
+
+<table>
+
+<tr>
+<th>User ID</th>
+<th>Server</th>
+<th>Guild / Clan ID</th>
+<th>Status</th>
+<th>Launch Time</th>
+</tr>
+
+{% for log in bot_logs %}
+
+<tr>
+<td>{{ log.user_id }}</td>
+<td>{{ log.server }}</td>
+<td>{{ log.clan_id }}</td>
+<td>{{ log.status }}</td>
+<td>{{ log.created_at }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+  </div>
+
 <script>
 
 function openTab(id, btn){
