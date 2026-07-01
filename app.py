@@ -164,6 +164,7 @@ def admin_dashboard():
     users = User.query.all()
     payments = PaymentRequest.query.all()
     codes = RedeemCode.query.all()
+    bot_logs = BotLaunch.query.order_by(BotLaunch.created_at.desc()).all()
 
     total_users = len(users)
     pending_payments = PaymentRequest.query.filter_by(status="Pending").count()
@@ -175,6 +176,7 @@ def admin_dashboard():
         users=users,
         payments=payments,
         codes=codes,
+        bot_logs=bot_logs,
         total_users=total_users,
         pending_payments=pending_payments,
         approved_payments=approved_payments,
