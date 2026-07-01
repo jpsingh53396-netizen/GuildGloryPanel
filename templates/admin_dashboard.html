@@ -109,9 +109,10 @@ color:white;
 <!-- TABS -->
 <div class="tabs">
 <button class="tab-btn active" onclick="openTab('stats',this)">Stats</button>
-<button class="tab-btn active" onclick="openTab('users')">Users</button>
-<button class="tab-btn" onclick="openTab('payments')">Payments</button>
-<button class="tab-btn" onclick="openTab('redeem')">Redeem</button>
+<button class="tab-btn" onclick="openTab('users', this)">Users</button>
+<button class="tab-btn" onclick="openTab('botlogs', this)">Bot Logs</button>
+<button class="tab-btn" onclick="openTab('payments', this)">Payments</button>
+<button class="tab-btn" onclick="openTab('redeem', this)">Redeem</button>
 </div>
 
 <div id="stats" class="card active">
@@ -122,6 +123,7 @@ color:white;
 <p>Pending Payments: {{ pending_payments }}</p>
 <p>Approved: {{ approved_payments }}</p>
 <p>Rejected: {{ rejected_payments }}</p>
+<p>Total Bot Logs: {{ bot_logs|length }}</p>
 
 </div>
 
@@ -148,8 +150,10 @@ color:white;
 </div>
 
 <!-- PAYMENTS -->
-<div id="payments" class="card"><h3>💳 PAYMENT REQUESTS<
-h3><table><tr>
+<div id="payments" class="card">
+<h3>💳 PAYMENT REQUESTS</h3>
+<table>
+<tr>
 <th>User ID</th>
 <th>Credits</th>
 <th>UTR</th>
@@ -179,13 +183,39 @@ Reject
 
 </table></div>
 
-<h3>🛠 Maintenance Mode</h3>
+<!-- MAINTENANCE -->
+<div class="card active">
+
+<h3>🛠 Website Maintenance</h3>
+
+<p>
+Current Status:
+<b>
+{% if settings.maintenance_mode %}
+<span style="color:#ff4444;">🔴 ENABLED</span>
+{% else %}
+<span style="color:#00ff66;">🟢 DISABLED</span>
+{% endif %}
+</b>
+</p>
+
+<br>
 
 <a href="/admin/toggle-maintenance">
-<button class="btn reject">
-Toggle Maintenance
+
+<button class="btn reject" style="width:100%;padding:12px;font-size:16px;">
+
+{% if settings.maintenance_mode %}
+🟢 Disable Maintenance
+{% else %}
+🔴 Enable Maintenance
+{% endif %}
+
 </button>
+
 </a>
+
+</div>
 
 <!-- REDEEM -->
 <div id="redeem" class="card">
@@ -228,6 +258,36 @@ ACTIVE
 </table>
 
 </div>
+
+<div id="botlogs" class="card">
+
+<h3>🚀 Bot Launch History</h3>
+
+<table>
+
+<tr>
+<th>User ID</th>
+<th>Server</th>
+<th>Guild / Clan ID</th>
+<th>Status</th>
+<th>Launch Time</th>
+</tr>
+
+{% for log in bot_logs %}
+
+<tr>
+<td>{{ log.user_id }}</td>
+<td>{{ log.server }}</td>
+<td>{{ log.clan_id }}</td>
+<td>{{ log.status }}</td>
+<td>{{ log.created_at }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+  </div>
 
 <script>
 
