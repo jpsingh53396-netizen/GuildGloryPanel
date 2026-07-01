@@ -109,10 +109,10 @@ color:white;
 <!-- TABS -->
 <div class="tabs">
 <button class="tab-btn active" onclick="openTab('stats',this)">Stats</button>
-<button class="tab-btn active" onclick="openTab('users')">Users</button>
+<button class="tab-btn" onclick="openTab('users', this)">Users</button>
 <button class="tab-btn" onclick="openTab('botlogs', this)">Bot Logs</button>
-<button class="tab-btn" onclick="openTab('payments')">Payments</button>
-<button class="tab-btn" onclick="openTab('redeem')">Redeem</button>
+<button class="tab-btn" onclick="openTab('payments', this)">Payments</button>
+<button class="tab-btn" onclick="openTab('redeem', this)">Redeem</button>
 </div>
 
 <div id="stats" class="card active">
@@ -149,8 +149,10 @@ color:white;
 </div>
 
 <!-- PAYMENTS -->
-<div id="payments" class="card"><h3>💳 PAYMENT REQUESTS<
-h3><table><tr>
+<div id="payments" class="card">
+<h3>💳 PAYMENT REQUESTS<h3>
+<table>
+<tr>
 <th>User ID</th>
 <th>Credits</th>
 <th>UTR</th>
@@ -180,13 +182,39 @@ Reject
 
 </table></div>
 
-<h3>🛠 Maintenance Mode</h3>
+<!-- MAINTENANCE -->
+<div class="card">
+
+<h3>🛠 Website Maintenance</h3>
+
+<p>
+Current Status:
+<b>
+{% if settings.maintenance_mode %}
+<span style="color:#ff4444;">🔴 ENABLED</span>
+{% else %}
+<span style="color:#00ff66;">🟢 DISABLED</span>
+{% endif %}
+</b>
+</p>
+
+<br>
 
 <a href="/admin/toggle-maintenance">
-<button class="btn reject">
-Toggle Maintenance
+
+<button class="btn reject" style="width:100%;padding:12px;font-size:16px;">
+
+{% if settings.maintenance_mode %}
+🟢 Disable Maintenance
+{% else %}
+🔴 Enable Maintenance
+{% endif %}
+
 </button>
+
 </a>
+
+</div>
 
 <!-- REDEEM -->
 <div id="redeem" class="card">
