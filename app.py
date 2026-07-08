@@ -307,6 +307,7 @@ def launch_bot():
         user_id=user.id,
         clan_id=clan_id,
         server=server
+        status="PENDING"
     )
 
     db.session.add(new_log)
