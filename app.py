@@ -279,6 +279,46 @@ def toggle_maintenance():
 
     return redirect("/admin/dashboard")
 
+# ---------------- APPROVE BOT ----------------
+@app.route("/admin/approve-bot/<int:id>")
+def approve_bot(id):
+
+    if not session.get("admin"):
+        return redirect("/admin")
+
+    log = BotLaunch.query.get_or_404(id)
+
+    log.status = "RUNNING"
+    log.approved_at = datetime.now()
+
+    db.session.commit()
+
+    return redirect("/admin/dashboard")
+
+# ---------------- REJECT BOT ----------------
+@app.route("/admin/reject-bot/<int:id>", methods=["POST"])
+def reject_bot(id):
+
+    if not session.get("admin"):
+        return redirect("/admin")
+
+    log = BotLaunch.query.get_or_404(id)
+
+    user = User.query.get(log.user_id)
+
+    # Credit Refund
+    user.credits += 1
+
+    # Update Status
+    log.status = "REJECTED"
+
+    # Save Reject Reason
+    log.rejected_reason = request.form.get("reason")
+
+    db.session.commit()
+
+    return redirect("/admin/dashboard")
+
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
