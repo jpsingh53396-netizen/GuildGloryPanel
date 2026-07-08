@@ -79,7 +79,7 @@ def dashboard():
 
     logs = BotLaunch.query.filter_by(user_id=user.id).all()
 
-        for l in logs:
+    for l in logs:
 
         if l.status == "PENDING":
 
@@ -363,7 +363,7 @@ def launch_bot():
     new_log = BotLaunch(
         user_id=user.id,
         clan_id=clan_id,
-        server=server
+        server=server,
         status="PENDING"
     )
 
