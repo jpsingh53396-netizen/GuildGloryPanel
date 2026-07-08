@@ -79,34 +79,35 @@ def dashboard():
 
     logs = BotLaunch.query.filter_by(user_id=user.id).all()
 
-    for l in logs:
+        for l in logs:
+
         if l.status == "PENDING":
 
-    l.expire_text = "Waiting for Admin"
+            l.expire_text = "Waiting for Admin"
 
-elif l.status == "RUNNING":
+        elif l.status == "RUNNING":
 
-    expire_time = l.approved_at + timedelta(hours=8)
+            expire_time = l.approved_at + timedelta(hours=8)
 
-    if datetime.now() >= expire_time:
+            if datetime.now() >= expire_time:
 
-        l.status = "COMPLETED"
-        db.session.commit()
+                l.status = "COMPLETED"
+                db.session.commit()
 
-        l.expire_text = "Completed"
+                l.expire_text = "Completed"
 
-    else:
+            else:
 
-        remaining = expire_time - datetime.now()
+                remaining = expire_time - datetime.now()
 
-        hours = remaining.seconds // 3600
-        minutes = (remaining.seconds % 3600) // 60
+                hours = remaining.seconds // 3600
+                minutes = (remaining.seconds % 3600) // 60
 
-        l.expire_text = f"{hours}h {minutes}m"
+                l.expire_text = f"{hours}h {minutes}m"
 
-elif l.status == "REJECTED":
+        elif l.status == "REJECTED":
 
-    l.expire_text = "Rejected"
+            l.expire_text = "Rejected"
 
     return render_template(
         "dashboard.html",
