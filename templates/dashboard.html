@@ -350,17 +350,38 @@ Cost: 1 Credit
 
 </div>
 
-{% if l.status == "RUNNING" %}
-<span class="badge running">RUNNING</span>
+{% if l.status == "PENDING" %}
+
+<span class="badge" style="background:#ffc107;color:black;">
+🟡 PENDING APPROVAL
+</span>
+
+{% elif l.status == "RUNNING" %}
+
+<span class="badge running">
+🟢 RUNNING
+</span>
+
+<br>
+
+⏳ {{ l.expire_text }}
 
 {% elif l.status == "COMPLETED" %}
-<span class="badge completed">COMPLETED</span>
 
-{% elif l.status == "FAILED" %}
-<span class="badge failed">FAILED</span>
+<span class="badge completed">
+✅ COMPLETED
+</span>
 
-{% elif l.status == "EXPIRED" %}
-<span class="badge expired">EXPIRED</span>
+{% elif l.status == "REJECTED" %}
+
+<span class="badge failed">
+❌ REJECTED
+</span>
+
+<br>
+
+Reason :
+{{ l.rejected_reason }}
 
 {% endif %}
             </div>
