@@ -261,7 +261,7 @@ ACTIVE
 
 <div id="botlogs" class="card">
 
-<h3>🚀 Bot Launch History</h3>
+<h3>🚀 Pending Bot Requests</h3>
 
 <table>
 
@@ -271,6 +271,7 @@ ACTIVE
 <th>Guild / Clan ID</th>
 <th>Status</th>
 <th>Launch Time</th>
+<th>Action</th>
 </tr>
 
 {% for log in bot_logs %}
@@ -281,6 +282,51 @@ ACTIVE
 <td>{{ log.clan_id }}</td>
 <td>{{ log.status }}</td>
 <td>{{ log.created_at }}</td>
+<td>
+
+{% if log.status == "PENDING" %}
+
+<a href="/admin/approve-bot/{{ log.id }}">
+
+<button class="btn approve">
+
+Approve
+
+</button>
+
+</a>
+
+<form action="/admin/reject-bot/{{ log.id }}" method="POST">
+
+<input
+type="text"
+name="reason"
+placeholder="Reject Reason"
+required>
+
+<button class="btn reject">
+
+Reject
+
+</button>
+
+</form>
+
+{% elif log.status == "RUNNING" %}
+
+🟢 Running
+
+{% elif log.status == "COMPLETED" %}
+
+✅ Completed
+
+{% elif log.status == "REJECTED" %}
+
+❌ Rejected
+
+{% endif %}
+
+</td>
 </tr>
 
 {% endfor %}
